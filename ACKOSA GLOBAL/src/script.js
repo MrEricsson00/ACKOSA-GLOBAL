@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const body = document.body;
 
     // Mobile Menu Toggle
-    mobileMenuBtn.addEventListener('click', function() {
+    function toggleMenu() {
         nav.classList.add('active');
         overlay.classList.add('active');
         body.classList.add('menu-open');
-    });
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMenu);
+    mobileMenuBtn.addEventListener('touchstart', toggleMenu);
 
     // Close Menu Functions
     function closeMenu() {
@@ -23,11 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close Menu Events
     mobileMenuClose.addEventListener('click', closeMenu);
+    mobileMenuClose.addEventListener('touchstart', closeMenu);
     overlay.addEventListener('click', closeMenu);
+    overlay.addEventListener('touchstart', closeMenu);
 
     // Close menu when clicking on nav links (mobile)
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                closeMenu();
+            }
+        });
+        link.addEventListener('touchstart', function() {
             if (window.innerWidth <= 768) {
                 closeMenu();
             }
@@ -69,30 +79,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open modal
     readMoreLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+        function openModal(e) {
             e.preventDefault();
             const modalId = this.getAttribute('data-modal');
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.display = 'flex';
             }
-        });
+        }
+        link.addEventListener('click', openModal);
+        link.addEventListener('touchstart', openModal);
     });
 
     // Close modal on close button
     closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        function closeModal() {
             this.closest('.modal').style.display = 'none';
-        });
+        }
+        button.addEventListener('click', closeModal);
+        button.addEventListener('touchstart', closeModal);
     });
 
     // Close modal on outside click
     modals.forEach(modal => {
-        modal.addEventListener('click', function(e) {
+        function closeModalOutside(e) {
             if (e.target === this) {
                 this.style.display = 'none';
             }
-        });
+        }
+        modal.addEventListener('click', closeModalOutside);
+        modal.addEventListener('touchstart', closeModalOutside);
     });
 });
 document.getElementById('contactForm').addEventListener('submit', function(e) {
