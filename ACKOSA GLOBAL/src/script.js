@@ -61,8 +61,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Your other JavaScript functions...
+
+    // Modal functionality
+    const readMoreLinks = document.querySelectorAll('.read-more[data-modal]');
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close-modal');
+
+    // Open modal
+    readMoreLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalId = this.getAttribute('data-modal');
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        });
+    });
+
+    // Close modal on close button
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modal on outside click
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    });
 });
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
