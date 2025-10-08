@@ -155,3 +155,64 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
         submitBtn.style.display = 'flex';
     });
 });
+
+// Gallery Filter Functionality
+const filterButtons = document.querySelectorAll('.filter-btn');
+const galleryItems = document.querySelectorAll('.gallery-item');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+
+        const filterValue = this.getAttribute('data-filter');
+
+        galleryItems.forEach(item => {
+            if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Image Reveal Animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion) {
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Add staggered delay for gallery items
+                    const delay = entry.target.classList.contains('gallery-item') ? index * 100 : 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(element => {
+            observer.observe(element);
+        });
+    } else {
+        // If reduced motion is preferred, just show all elements
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(element => {
+            element.classList.add('active');
+        });
+    }
+});
