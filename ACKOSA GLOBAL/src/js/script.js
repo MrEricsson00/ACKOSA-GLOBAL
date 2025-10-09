@@ -170,10 +170,13 @@ filterButtons.forEach(button => {
         const filterValue = this.getAttribute('data-filter');
 
         galleryItems.forEach(item => {
+            const wasVisible = item.style.display !== 'none';
             if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
                 item.style.display = 'block';
+                console.log('Gallery filter: showing item', item, 'was visible:', wasVisible, 'has active:', item.classList.contains('active'));
             } else {
                 item.style.display = 'none';
+                console.log('Gallery filter: hiding item', item, 'was visible:', wasVisible, 'has active:', item.classList.contains('active'));
             }
         });
     });
@@ -189,24 +192,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px 0px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
+                console.log('IntersectionObserver entry:', entry.target, 'isIntersecting:', entry.isIntersecting, 'index:', index, 'boundingClientRect:', entry.boundingClientRect, 'intersectionRatio:', entry.intersectionRatio);
                 if (entry.isIntersecting) {
+                    console.log('Adding active to:', entry.target, 'current classes:', entry.target.className);
                     // Add staggered delay for gallery items
                     const delay = entry.target.classList.contains('gallery-item') ? index * 100 : 0;
                     setTimeout(() => {
                         entry.target.classList.add('active');
+                        console.log('Active class added to:', entry.target, 'now classes:', entry.target.className);
                     }, delay);
                     observer.unobserve(entry.target);
+                    console.log('Unobserved:', entry.target);
+                } else {
+                    console.log('Not intersecting:', entry.target, 'has active:', entry.target.classList.contains('active'));
                 }
             });
         }, observerOptions);
 
-        revealElements.forEach(element => {
-            observer.observe(element);
+        // Function to check if element is in viewport
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        revealElements.forEach((element, index) => {
+            if (isElementInViewport(element)) {
+                console.log('Element already in viewport on load:', element);
+                // Add staggered delay for gallery items
+                const delay = element.classList.contains('gallery-item') ? index * 100 : 0;
+                setTimeout(() => {
+                    element.classList.add('active');
+                    console.log('Active class added on load to:', element);
+                }, delay);
+            } else {
+                observer.observe(element);
+            }
         });
     } else {
         // If reduced motion is preferred, just show all elements
@@ -215,4 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
             element.classList.add('active');
         });
     }
+
+    // Log image loading
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.addEventListener('load', () => {
+            console.log('Image loaded:', img.src);
+        });
+        img.addEventListener('error', () => {
+            console.log('Image failed to load:', img.src);
+        });
+    });
 });
