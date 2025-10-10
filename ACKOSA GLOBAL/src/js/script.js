@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS
+    AOS.init({
+        duration: 600,
+        once: true,
+        offset: 100
+    });
     // Mobile Menu Elements
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenuClose = document.getElementById('mobileMenuClose');
@@ -178,92 +184,6 @@ filterButtons.forEach(button => {
                 item.style.display = 'none';
                 console.log('Gallery filter: hiding item', item, 'was visible:', wasVisible, 'has active:', item.classList.contains('active'));
             }
-        });
-    });
-});
-
-// Image Reveal Animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!prefersReducedMotion) {
-        const revealElements = document.querySelectorAll('.reveal');
-
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px 0px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                console.log('IntersectionObserver entry:', entry.target, 'isIntersecting:', entry.isIntersecting, 'index:', index, 'boundingClientRect:', entry.boundingClientRect, 'intersectionRatio:', entry.intersectionRatio);
-                if (entry.isIntersecting) {
-                    console.log('Adding active to:', entry.target, 'current classes:', entry.target.className);
-                    // Add staggered delay for gallery items
-                    const delay = entry.target.classList.contains('gallery-item') ? index * 100 : 0;
-                    setTimeout(() => {
-                        entry.target.classList.add('active');
-                        console.log('Active class added to:', entry.target, 'now classes:', entry.target.className);
-                    }, delay);
-                    observer.unobserve(entry.target);
-                    console.log('Unobserved:', entry.target);
-                } else {
-                    console.log('Not intersecting:', entry.target, 'has active:', entry.target.classList.contains('active'));
-                }
-            });
-        }, observerOptions);
-
-        // Function to check if element is in viewport
-        function isElementInViewport(el) {
-            const rect = el.getBoundingClientRect();
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-        }
-
-        revealElements.forEach((element, index) => {
-            if (isElementInViewport(element)) {
-                console.log('Element already in viewport on load:', element);
-                // Add staggered delay for gallery items
-                const delay = element.classList.contains('gallery-item') ? index * 100 : 0;
-                setTimeout(() => {
-                    element.classList.add('active');
-                    console.log('Active class added on load to:', element);
-                }, delay);
-            } else {
-                observer.observe(element);
-            }
-        });
-
-        // Fallback: ensure all reveal elements get active after 2 seconds if not already
-        setTimeout(() => {
-            revealElements.forEach(element => {
-                if (!element.classList.contains('active')) {
-                    element.classList.add('active');
-                    console.log('Fallback: Active class added to:', element);
-                }
-            });
-        }, 2000);
-    } else {
-        // If reduced motion is preferred, just show all elements
-        const revealElements = document.querySelectorAll('.reveal');
-        revealElements.forEach(element => {
-            element.classList.add('active');
-        });
-    }
-
-    // Log image loading
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        img.addEventListener('load', () => {
-            console.log('Image loaded:', img.src);
-        });
-        img.addEventListener('error', () => {
-            console.log('Image failed to load:', img.src);
         });
     });
 });
