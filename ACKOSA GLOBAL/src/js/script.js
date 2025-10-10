@@ -117,26 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('touchstart', closeModalOutside);
     });
 
-    // Watch Video functionality
-    const watchVideoLinks = document.querySelectorAll('.read-more:not([data-modal])');
-    watchVideoLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const card = this.closest('.news-card');
-            const video = card.querySelector('video');
-            if (video) {
-                video.play();
-            }
-        });
-        link.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            const card = this.closest('.news-card');
-            const video = card.querySelector('video');
-            if (video) {
-                video.play();
-            }
-        });
-    });
 });
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
