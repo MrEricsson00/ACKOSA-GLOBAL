@@ -238,6 +238,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 observer.observe(element);
             }
         });
+
+        // Fallback: ensure all reveal elements get active after 2 seconds if not already
+        setTimeout(() => {
+            revealElements.forEach(element => {
+                if (!element.classList.contains('active')) {
+                    element.classList.add('active');
+                    console.log('Fallback: Active class added to:', element);
+                }
+            });
+        }, 2000);
     } else {
         // If reduced motion is preferred, just show all elements
         const revealElements = document.querySelectorAll('.reveal');
